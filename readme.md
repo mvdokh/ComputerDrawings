@@ -2,9 +2,11 @@
 
 ## Features
 - **Accelerated on GPU** and CPU using numba CUDA JIT
-- **Interactive exploration** using Matplotlib
+- **Modern GUI Interface** with real-time system monitoring
+- **Interactive exploration** using both GUI and Matplotlib
   - Use mousewheel or left/right click to zoom in/out
   - Use sliders to change the rendering parameters
+  - Real-time performance monitoring
 - Save still and animated images (GIF)
 - Smooth iteration coloring, anti-aliasing by oversampling
 - **Shading:** Blinn-Phong & Lambert lighting, stripe average coloring,
@@ -14,6 +16,25 @@
 - 100% Python 🐍
 
 ## Quick start
+
+### Option 1: Modern GUI (Recommended)
+
+Launch the modern GUI interface:
+
+```python
+python launch.py
+```
+
+Or double-click `start_gui.bat` on Windows.
+
+The GUI provides:
+- Interactive fractal explorer with click-to-zoom
+- Real-time parameter adjustment with sliders
+- System performance monitoring (processing, memory, and accelerator usage)
+- Easy image saving and animation creation
+- Modern, responsive interface
+
+### Option 2: Original Matplotlib Interface
 
 ```python
 from mandelbrot import Mandelbrot
@@ -49,11 +70,43 @@ mand.animate(x_real, x_imag, 'mandelbrot.gif')
 
 ### Run from command line
 
-Use the following command from terminal to launch a GUI with default parameters:
+Use the following command from terminal to launch the modern GUI:
+
+```shell
+python launch.py
+```
+
+Or launch the original Matplotlib interface:
 
 ```shell
 python ./mandelbrot.py
 ```
+
+## Modern GUI Features
+
+The new GUI (`mandelbrot_gui.py`) provides a modern, user-friendly interface with:
+
+### Controls
+- **Detail Level**: Adjust iteration count for quality vs speed
+- **Resolution**: Choose between Low (320px), Medium (640px), and High (1280px)
+- **Color Controls**: Real-time RGB phase adjustment and color cycling
+- **Effects**: Stripe and step density controls for artistic effects
+- **Navigation**: Zoom in/out, reset view, and auto-update toggle
+
+### Interactive Features
+- **Click to Zoom**: Click anywhere on the fractal to zoom in at that point
+- **Mouse Wheel**: Zoom in/out at the center of the current view
+- **Real-time Updates**: Parameters update the image automatically (can be toggled)
+
+### System Monitoring
+The GUI includes real-time performance monitoring showing:
+- **Processing Usage**: CPU utilization during computation
+- **Memory Usage**: System RAM usage
+- **Accelerator Usage**: Processing unit utilization (includes dedicated accelerators when available)
+
+### File Operations
+- **Save Image**: Export current fractal as PNG or JPEG
+- **Create Animation**: Generate zoom animations as GIF files
 ## Gallery
 
 Some examples of HD images, and corresponding code:
@@ -154,7 +207,29 @@ mand.draw('velvet.png')
 Computing a sequence of `100` frames of HD pictures (`1280*720` pixels), with `2000` iterations takes approximately **1 second** on a Tesla K80 GPU.
 
 ## Requirements
+
+### Core Dependencies
 - NumPy
 - Matplotlib
 - Numba
+- Pillow (PIL)
+- imageio
+
+### Optional Dependencies (for enhanced GUI features)
+- psutil (for system monitoring)
+- pynvml (for detailed accelerator monitoring)
+
+### Hardware Requirements
 - (optional, for much faster rendering) A CUDA compatible GPU & CUDA Toolkit
+
+### Installation
+
+Install all dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+Or install manually:
+```bash
+pip install numpy matplotlib numba pillow imageio psutil pynvml
+```

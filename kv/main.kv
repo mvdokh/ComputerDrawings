@@ -1,0 +1,169 @@
+#:kivy 2.0.0
+
+# Only define the card class once
+<FractalCard>:
+    orientation: 'vertical'
+    padding: 10
+    spacing: 10
+    size_hint: None, None
+    size: 300, 250
+    canvas.before:
+        Color:
+            rgba: self.enabled
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [15]
+    
+    Image:
+        source: 'assets/placeholder.png'  # Default placeholder
+        size_hint: 1, 0.7
+    
+    Label:
+        text: root.fractal_name
+        size_hint: 1, 0.3
+        font_size: 20
+        color: 1, 1, 1, 1
+
+<MainMenuScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.05, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        
+        Label:
+            text: 'Fractal Explorer'
+            font_size: 48
+            size_hint_y: 0.2
+            color: 0.3, 0.6, 1.0, 1
+        
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: 0.1
+            Label:
+                text: 'Select a fractal to explore'
+                font_size: 24
+                color: 0.8, 0.8, 0.8, 1
+        
+        GridLayout:
+            cols: 3
+            spacing: 30
+            padding: 20
+            size_hint_y: 0.6
+            
+            # Mandelbrot Classic
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 10
+                canvas.before:
+                    Color:
+                        rgba: 0.2, 0.2, 0.2, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15, 15, 15, 15]
+                
+                FractalButton:
+                    fractal_type: 'mandelbrot'
+                    source: 'assets/mandelbrot_preview.png'  # You'll need to create this
+                    allow_stretch: True
+                    keep_ratio: True
+                    size_hint_y: 0.8
+                
+                Label:
+                    text: 'Mandelbrot Classic'
+                    font_size: 20
+                    size_hint_y: 0.2
+                    color: 0.9, 0.9, 0.9, 1
+            
+            # Placeholder for future fractals
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 10
+                canvas.before:
+                    Color:
+                        rgba: 0.15, 0.15, 0.15, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15, 15, 15, 15]
+                
+                Label:
+                    text: 'Coming Soon'
+                    font_size: 24
+                    color: 0.5, 0.5, 0.5, 1
+                
+                Label:
+                    text: 'Julia Set Explorer'
+                    font_size: 20
+                    color: 0.5, 0.5, 0.5, 1
+            
+            # Another placeholder
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 10
+                canvas.before:
+                    Color:
+                        rgba: 0.15, 0.15, 0.15, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15, 15, 15, 15]
+                
+                Label:
+                    text: 'Coming Soon'
+                    font_size: 24
+                    color: 0.5, 0.5, 0.5, 1
+                
+                Label:
+                    text: 'Newton Fractal'
+                    font_size: 20
+                    color: 0.5, 0.5, 0.5, 1
+        
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.1
+            spacing: 20
+            padding: [20, 0, 20, 0]
+            
+            Widget:
+                size_hint_x: 0.7
+            
+            Button:
+                text: 'Exit'
+                size_hint_x: 0.3
+                font_size: 20
+                background_color: 0.8, 0.2, 0.2, 1
+                on_release: app.stop()
+                background_color: 0.8, 0.2, 0.2, 1
+                on_release: app.stop()
+                
+                Label:
+                    text: 'Newton Fractal'
+                    font_size: 20
+                    color: 0.5, 0.5, 0.5, 1
+        
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.1
+            spacing: 20
+            padding: [20, 0, 20, 0]
+            
+            Widget:
+                size_hint_x: 0.7
+            
+            Button:
+                text: 'Exit'
+                size_hint_x: 0.3
+                font_size: 20
+                background_color: 0.8, 0.2, 0.2, 1
+                on_release: app.stop()
+                background_color: 0.8, 0.2, 0.2, 1
+                on_release: app.stop()

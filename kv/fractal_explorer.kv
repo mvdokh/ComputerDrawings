@@ -1,0 +1,202 @@
+#:kivy 2.0.0
+
+<MandelbrotExplorerScreen>:
+    fractal_image: fractal_image
+    status_label: status_label
+    iterations_slider: iterations_slider
+    
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.05, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: 'horizontal'
+        
+        # Left panel - controls
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_x: 0.25
+            padding: 10
+            spacing: 10
+            canvas.before:
+                Color:
+                    rgba: 0.15, 0.15, 0.15, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            
+            Label:
+                text: 'Mandelbrot Explorer'
+                font_size: 24
+                size_hint_y: 0.1
+                color: 0.3, 0.6, 1.0, 1
+            
+            ScrollView:
+                size_hint_y: 0.8
+                
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: 15
+                    padding: 10
+                    size_hint_y: None
+                    height: self.minimum_height
+                    
+                    # Current coordinates
+                    Label:
+                        text: 'Current View'
+                        font_size: 18
+                        size_hint_y: None
+                        height: 30
+                        color: 0.9, 0.9, 0.9, 1
+                        halign: 'left'
+                        text_size: self.width, None
+                    
+                    Label:
+                        text: f"Real: [{root.mandelbrot.coord[0]:.6f}, {root.mandelbrot.coord[1]:.6f}]\nImag: [{root.mandelbrot.coord[2]:.6f}, {root.mandelbrot.coord[3]:.6f}]"
+                        font_size: 14
+                        size_hint_y: None
+                        height: 60
+                        color: 0.7, 0.7, 0.7, 1
+                        font_name: 'RobotoMono-Regular'
+                        halign: 'left'
+                        text_size: self.width, None
+                    
+                    Label:
+                        text: f"Zoom: {root.zoom_level:.1f}x"
+                        font_size: 16
+                        size_hint_y: None
+                        height: 30
+                        color: 0.4, 0.7, 1.0, 1
+                    
+                    Button:
+                        text: 'Reset to Home View'
+                        size_hint_y: None
+                        height: 50
+                        on_release: root.reset_to_home()
+                    
+                    # Visual parameters
+                    Label:
+                        text: 'Visual Parameters'
+                        font_size: 18
+                        size_hint_y: None
+                        height: 30
+                        color: 0.9, 0.9, 0.9, 1
+                        halign: 'left'
+                        text_size: self.width, None
+                    
+                    # Dynamic iterations
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y: None
+                        height: 40
+                        
+                        Label:
+                            text: 'Dynamic Iterations'
+                            size_hint_x: 0.7
+                        
+                        Switch:
+                            size_hint_x: 0.3
+                            active: root.dynamic_iterations
+                            on_active: root.dynamic_iterations = self.active; root.update_mandelbrot()
+                    
+                    # Preview quality
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y: None
+                        height: 40
+                        
+                        Label:
+                            text: 'Preview Quality'
+                            size_hint_x: 0.5
+                        
+                        Spinner:
+                            text: root.preview_quality
+                            values: ['Low', 'Normal', 'High']
+                            size_hint_x: 0.5
+                            on_text: root.preview_quality = self.text; root.update_mandelbrot()
+                    
+                    # Oversampling
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        size_hint_y: None
+                        height: 40
+                        
+                        Label:
+                            text: 'Oversampling'
+                            size_hint_x: 0.5
+                        
+                        Spinner:
+                            text: str(root.oversampling)
+                            values: ['1', '2', '3']
+                            size_hint_x: 0.5
+                            on_text: root.oversampling = int(self.text); root.update_mandelbrot()
+                    
+                    # Iterations slider
+                    Label:
+                        text: f"Iterations: {int(iterations_slider.value)}"
+                        size_hint_y: None
+                        height: 30
+                    
+                    Slider:
+                        id: iterations_slider
+                        min: 100
+                        max: 5000
+                        step: 50
+                        value: 500
+                        size_hint_y: None
+                        height: 40
+                        on_value: root.max_iterations = self.value; root.mandelbrot.maxiter = int(self.value); root.update_mandelbrot()
+                    
+                    # More controls can be added here
+                    
+            # Bottom buttons
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: 0.1
+                spacing: 10
+                
+                Button:
+                    text: 'Back to Menu'
+                    on_release: root.go_back_to_menu()
+                
+                Button:
+                    text: 'Save Image'
+                    on_release: # TODO: Implement save functionality
+        
+        # Right panel - fractal display
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_x: 0.75
+            padding: 10
+            
+            # Status bar
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: 0.05
+                
+                Label:
+                    text: 'Live Preview'
+                    size_hint_x: 0.3
+                    color: 0.3, 0.6, 1.0, 1
+                
+                Label:
+                    id: status_label
+                    text: 'Ready'
+                    size_hint_x: 0.7
+                    color: 0, 1, 0, 1 if self.text == 'Ready' else 1, 1, 0, 1
+            
+            # Fractal display
+            Image:
+                id: fractal_image
+                size_hint_y: 0.9
+                allow_stretch: True
+                keep_ratio: True
+            
+            # Instructions
+            Label:
+                size_hint_y: 0.05
+                text: 'Click to zoom in • Right-click to zoom out'
+                color: 0.7, 0.7, 0.7, 1

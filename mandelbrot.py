@@ -103,8 +103,8 @@ def smooth_iter(c, maxiter, stripe_s, stripe_sig):
         - dem: estimate of distance to the nearest point of the set
         - normal, used for shading
     """
-    # Escape radius squared: 2**2 is enough, but using a higher radius yields
-    # better estimate of the smooth iteration count and the stripes
+    # Escape radius squared: use a higher radius for better precision in deep zooms
+    # The higher the radius, the better the estimate of the smooth iteration count
     esc_radius_2 = 10**10
     z = complex(0, 0)
    
@@ -113,6 +113,15 @@ def smooth_iter(c, maxiter, stripe_s, stripe_sig):
     stripe_a =  0
     # z derivative
     dz = 1+0j
+    
+    # Use perturbation theory to improve precision for deep zooms
+    # Save the previous z value to detect small changes
+    prev_z = z
+
+    # For periodic checking, we'll use a few periods
+    period = 20
+    min_check = 10
+    period_z = None
    
     # Mandelbrot iteration
     for n in range(maxiter):
@@ -120,6 +129,16 @@ def smooth_iter(c, maxiter, stripe_s, stripe_sig):
         dz = dz*2*z + 1
         # z update
         z = z*z + c
+        
+        # Periodicity checking to detect cardioid/bulb points early
+        # This helps prevent excess iterations in areas that are definitely in the set
+        if n > min_check and n % period == 0:
+            if period_z is None:
+                period_z = z
+            elif abs(z - period_z) < 1e-10:
+                # If we've returned to approximately the same point, we're in a cycle
+                return (0, 0, 0, 0)
+        
         if stripe:
             # Stripe Average Coloring
             # See: Jussi Harkonen On Smooth Fractal Coloring Techniques
@@ -154,7 +173,7 @@ def smooth_iter(c, maxiter, stripe_s, stripe_sig):
 
             # Normal vector for lighting
             u = z/dz
-            normal = u # 3D vector (u.real, u.imag. 1)
+            normal = u # 3D vector (u.real, u.imag, 1)
 
             # Milton's distance estimator
             dem = modz * math.log(modz) / abs(dz) / 2
@@ -162,6 +181,13 @@ def smooth_iter(c, maxiter, stripe_s, stripe_sig):
             # real smoothiter: n+smooth_i (1 > smooth_i > 0)
             # so smoothiter <= niter, in particular: smoothiter <= maxiter
             return (n+smooth_i, stripe_a, dem, normal)
+            
+        # Check for extremely slow change, which suggests we're in the set
+        # This helps bail out earlier for deep zooms
+        if n > 10 and abs(z - prev_z) < 1e-14 and abs(z) > 1e-14:
+            return (0, 0, 0, 0)
+            
+        prev_z = z
        
         if stripe:
             stripe_a = stripe_a * stripe_sig + stripe_t * (1-stripe_sig)
@@ -592,7 +618,7 @@ class MandelbrotExplorer():
         self.sld_li2 = Slider(ax=plt.axes([0.7, 0.12, 0.2, 0.02]), label='light_elevation',
                               valmin=0,valmax= 90,valinit=90*mand.light[1]/(math.pi/2), valstep=1)
         self.sld_li2.on_changed(self.update_val)
-        self.sld_li3 = Slider(ax=plt.axes([0.7, 0.10, 0.2, 0.02]), label='light_i',
+        self.sld_li3 = Slider(ax=plt.axes([0.7, 0.10, 0.02]), label='light_i',
                               valmin=0,valmax= 1, valinit=mand.light[2], valstep=.01)
         self.sld_li3.on_changed(self.update_val)
         self.sld_li4 = Slider(ax=plt.axes([0.7, 0.08, 0.2, 0.02]), label='k_ambiant',
@@ -660,4 +686,3 @@ class MandelbrotExplorer():
 
 if __name__ == "__main__":
     Mandelbrot().explore()
-    

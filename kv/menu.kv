@@ -1,0 +1,63 @@
+#:kivy 2.0.0
+
+<MainMenuScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.05, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        
+        Label:
+            text: 'Fractal Explorer'
+            font_size: 48
+            size_hint_y: 0.15
+            color: 0.3, 0.6, 1.0, 1
+        
+        Label:
+            text: 'Select a fractal to explore'
+            font_size: 24
+            size_hint_y: 0.1
+            color: 0.8, 0.8, 0.8, 1
+        
+        GridLayout:
+            cols: 3
+            spacing: 30
+            padding: 20
+            size_hint_y: 0.6
+            
+            FractalCard:
+                fractal_type: 'mandelbrot'
+                fractal_name: 'Mandelbrot Classic'
+                enabled: [1, 1, 1, 1]
+            
+            FractalCard:
+                fractal_type: 'julia'
+                fractal_name: 'Julia Set (Coming Soon)'
+                enabled: [0.5, 0.5, 0.5, 0.5]
+            
+            FractalCard:
+                fractal_type: 'newton'
+                fractal_name: 'Newton Fractal (Coming Soon)'
+                enabled: [0.5, 0.5, 0.5, 0.5]
+        
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.15
+            spacing: 20
+            padding: [20, 0, 20, 0]
+            
+            Widget:
+                size_hint_x: 0.7
+            
+            Button:
+                text: 'Exit'
+                size_hint_x: 0.3
+                font_size: 20
+                background_color: 0.8, 0.2, 0.2, 1
+                on_release: app.stop()
