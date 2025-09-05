@@ -1,142 +1,142 @@
-# Fast Mandelbrot set explorer
+# Mandelbrot Fractal Explorer
+
+A modern, interactive Mandelbrot explorer with GPU acceleration, real-time preview, and click-to-zoom. Includes both a GUI and a Matplotlib interface.
+
+## Project direction
+- I intend to make this a cool math graphing tool focused on fractals.
+- I will implement more functions that allow you to change equation parameters and explore related fractals.
 
 ## Features
-- **Accelerated on GPU** and CPU using numba CUDA JIT
-- **Modern GUI Interface** with real-time system monitoring
-- **Interactive exploration** using both GUI and Matplotlib
-  - Use mousewheel or left/right click to zoom in/out
-  - Use sliders to change the rendering parameters
-  - Real-time performance monitoring
-- Save still and animated images (GIF)
-- Smooth iteration coloring, anti-aliasing by oversampling
-- **Shading:** Blinn-Phong & Lambert lighting, stripe average coloring,
- steps shading
-- Customizable color palette
-- **Precision:** zoom down to float64 precision (approx. 16 significants digits)
-- 100% Python 🐍
+- GPU and CPU acceleration via Numba (CUDA when available)
+- Modern GUI with interactive navigation and real-time preview
+- Original Matplotlib interface for scripted exploration
+- Smooth iteration coloring, optional oversampling anti-aliasing
+- Shading: Blinn-Phong and Lambert lighting, stripe average coloring, step shading
+- Color themes and customizable palettes
+- High precision (float64) for deep zooms
+- Background processing and responsive UI
+- System monitoring (processing, memory, and accelerator usage)
 
 ## Quick start
 
-### Option 1: Modern GUI (Recommended)
+### Option A: Modern GUI (recommended)
+- Windows: double-click `start_gui.bat`
+- Or from terminal:
+  - `python launch.py`
+  - or: `python mandelbrot_modern_gui.py`
+  - or (in some versions): `python mandelbrot_gui.py`
 
-Launch the modern GUI interface:
-
-```python
-python launch.py
-```
-
-Or double-click `start_gui.bat` on Windows.
-
-The GUI provides:
-- Interactive fractal explorer with click-to-zoom
-- Real-time parameter adjustment with sliders
-- System performance monitoring (processing, memory, and accelerator usage)
-- Easy image saving and animation creation
-- Modern, responsive interface
-
-### Option 2: Original Matplotlib Interface
+### Option B: Original Matplotlib interface
 
 ```python
 from mandelbrot import Mandelbrot
-mand = Mandelbrot() # set `gpu = False` if no GPU is available
-```
+mand = Mandelbrot()  # set gpu=False if no GPU is available
 
-### Explore the set
-
-```python
-# Explore the set using interactive Matplotlib GUI
+# Explore interactively
 mand.explore()
-```
-### Draw an image
 
-```python
-# Draw an image and save it to file
+# Draw a still image
 mand.draw('mandelbrot.png')
 ```
-![](img/mandelbrot.png)
 
-### Make a zoom animation
+## Modern GUI usage
 
-```python
-# We decrease the image size to avoid overloading git and the readme page
-# We also increase the number of iterations, and add stripe coloring
-mand = Mandelbrot(maxiter = 5000, xpixels = 426, stripe_s = 5)
-# Point to zoom at
-x_real = -1.749705768080503
-x_imag = -6.13369029080495e-05
-mand.animate(x_real, x_imag, 'mandelbrot.gif')
-```
-![](img/mandelbrot.gif)
+### Interactive navigation
+- Click to zoom in at a point
+- Right-click to zoom out
+- Mouse wheel to zoom smoothly
+- Reset to return to the default view
+- Preview fits completely within the window
 
-### Run from command line
+### Visual controls
+- Iterations: 100–5000
+- Resolution presets for preview
+- Stripe and step effects, color cycling
+- Lighting effects: azimuth, elevation, intensity
+- Color themes (8 presets) and palette controls
 
-Use the following command from terminal to launch the modern GUI:
+### Presets
+- Seahorse Valley, Lightning, Spiral, Mini Mandelbrot, Elephant Valley, Fractal Coastline
+
+### Export
+- Set a custom export directory
+- Save images at 720p, 1080p, 1440p, or 4K
+- Create zoom animations (GIF) with 10–200 frames
+- Formats: PNG, JPEG, GIF
+
+### System monitoring (GUI)
+- Processing usage
+- Memory usage
+- Accelerator usage (when available)
+
+## Command line reference
+
+Launch the modern GUI
 
 ```shell
 python launch.py
 ```
 
-Or launch the original Matplotlib interface:
+Launch the original interface
 
 ```shell
 python ./mandelbrot.py
 ```
 
-## Modern GUI Features
-
-The new GUI (`mandelbrot_gui.py`) provides a modern, user-friendly interface with:
-
-### Controls
-- **Detail Level**: Adjust iteration count for quality vs speed
-- **Resolution**: Choose between Low (320px), Medium (640px), and High (1280px)
-- **Color Controls**: Real-time RGB phase adjustment and color cycling
-- **Effects**: Stripe and step density controls for artistic effects
-- **Navigation**: Zoom in/out, reset view, and auto-update toggle
-
-### Interactive Features
-- **Click to Zoom**: Click anywhere on the fractal to zoom in at that point
-- **Mouse Wheel**: Zoom in/out at the center of the current view
-- **Real-time Updates**: Parameters update the image automatically (can be toggled)
-
-### System Monitoring
-The GUI includes real-time performance monitoring showing:
-- **Processing Usage**: CPU utilization during computation
-- **Memory Usage**: System RAM usage
-- **Accelerator Usage**: Processing unit utilization (includes dedicated accelerators when available)
-
-### File Operations
-- **Save Image**: Export current fractal as PNG or JPEG
-- **Create Animation**: Generate zoom animations as GIF files
-## Gallery
-
-Some examples of HD images, and corresponding code:
+## Example: simple animation (compact)
 
 ```python
-mand = Mandelbrot(maxiter = 5000, rgb_thetas = [.11, .02, .92], stripe_s = 2,
-                  coord = [-0.5503295086752807,
-                           -0.5503293049351449,
-                           -0.6259346555912755,
-                           -0.625934541001796])
-mand.draw('crown.png')
+mand = Mandelbrot(maxiter=5000, xpixels=426, stripe_s=5)
+# Zoom target
+x_real = -1.749705768080503
+x_imag = -6.13369029080495e-05
+mand.animate(x_real, x_imag, 'mandelbrot.gif')
 ```
-![](img/crown.png)
 
-```python
-mand = Mandelbrot(maxiter = 5000, rgb_thetas = [.29, .02, 0.9], ncycle = 8,
-                  step_s = 10,
-                  coord = [-1.9854527029227764,
-                           -1.9854527027615938,
-                           0.00019009159314173224,
-                           0.00019009168379912058])
-mand.draw('pow.png')
+## Color themes
+- Classic, Fire, Ocean, Forest, Purple, Sunset, Electric, Copper
+
+## Technical notes
+- GPU acceleration via CUDA when available
+- Memory-efficient background computation for a responsive GUI
+- Float64 numerical stability for deep zooms
+
+## Tips
+- Start with presets, then fine-tune nearby
+- Increase iterations for deeper zooms
+- Experiment with color themes, stripe, and step settings
+- Right-click to zoom out
+- Save interesting views as you explore
+
+## Runtime
+- As a reference, generating about 100 frames at 1280×720 with 2000 iterations can complete in about a second on certain data center GPUs (e.g., Tesla K80), depending on configuration.
+
+## Requirements
+
+### Core dependencies
+- numpy
+- matplotlib
+- numba
+- pillow
+- imageio
+
+### Optional (GUI enhancements)
+- psutil
+- pynvml
+
+### Hardware
+- Optional: CUDA-capable GPU and CUDA Toolkit for faster rendering
+
+### Installation
+```bash
+pip install -r requirements.txt
+# or
+pip install numpy matplotlib numba pillow imageio psutil pynvml
 ```
-![](img/pow.png)
 
-```python
-mand = Mandelbrot(maxiter = 5000, rgb_thetas = [.83, .01, .99], stripe_s = 5,
-                  coord = [-1.749289287806423,
-                           -1.7492892878054118,
-                           -1.8709586016347623e-06,
+## Notes
+- The preview is optimized for responsiveness; final exports render at target resolution and quality.
+- If you do not have a CUDA GPU, set gpu=False or run CPU-only modes.
                            -1.8709580332005737e-06])
 mand.draw('octogone.png')
 ```
